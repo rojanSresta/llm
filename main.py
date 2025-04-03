@@ -8,15 +8,15 @@ from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 from htmlTemplates import css, bot_template, user_template
 from langchain.llms import HuggingFaceHub
+from unstructured.partition.pdf import partition_pdf
 
 def get_pdf_text(pdf_docs):
     text = ""
     for pdf in pdf_docs:
-        pdf_reader = PdfReader(pdf)
-        for page in pdf_reader.pages:
-            text += page.extract_text()
+        elements = partition_pdf(filename=pdf)
+        for element in elements:
+            text += element.text if element.text else ""
     return text
-
 
 def get_text_chunks(text):
     text_splitter = CharacterTextSplitter(
